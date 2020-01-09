@@ -102,9 +102,9 @@ void processInput(char * input){
         }
     }
 }*/
-int processInput(char * input){
 
-    return 0; 
+double addSub(double num1, double num2) {
+    return num1 + num2; 
 }
 
 //Got this method from https://stackoverflow.com/questions/1726302/removing-spaces-from-a-string-in-c
@@ -119,33 +119,85 @@ void remove_whitespace(char * s){
 }
 
 void processHelper(char * input){
-    remove_whitespace(input); 
+
     int sum = 0; 
     char num1[100]; 
     char num2[100]; 
     char operator; 
     char c; 
-    printf("%s", input);
-    while ((strstr(input, "+") != NULL) || (strstr(input, "*") != NULL) 
-    || (strstr(input, "-") != NULL) || (strstr(input, "/") != NULL)){
-        for (int i = 0; i < strlen(input); i++){
-            c = input[i]; 
+    int opIsValid = VALID; 
+    int needToCalc = INVALID; 
+    int prevInd = 0; 
+    int whichNum = FIRST; 
 
+    if ((strstr(input, "+") != NULL) || (strstr(input, "*") != NULL) 
+        || (strstr(input, "-") != NULL) || (strstr(input, "/") != NULL)) {
+        for (int i = 0; i < strlen(input); i++) {
+            c = input[i]; 
+            int size = i - prevInd; 
+            if (c < '0' || c > '9') {
+                switch(c){
+                    case '.':
+                        continue; 
+                    case '+':
+                        operator = '+';
+                        break; 
+                    case '-':
+                        operator = '-';
+                        break;
+                    case '*':
+                        operator = '*';
+                        break;
+                    case '/':
+                        operator = '/';
+                        break;
+                    case '\n':
+                    case '\0':
+                        break;
+                    default:
+                        printf("Invalid character in input: '%c'. Please reformat and re-enter.\n", c); 
+                        return; 
+                }     
+                if (whichNum == FIRST){
+                    memcpy(num1, &input[prevInd], size); 
+                    num1[size] = '\0';
+                    prevInd = i + 1;
+                    whichNum = SECOND; 
+                    continue; 
+                } else {
+                    memcpy(num2, &input[prevInd], size); 
+                    num2[size] = '\0';
+                    prevInd = i + 1;
+                    
+                    double ans = 0.0; 
+                    if (operator == '+') {
+                        ans = addSub(atof(num1), atof(num2));
+                    } else if (operator == '-') {
+                        ans = addSub(atof(num1), atof(num2) * -1); 
+                    }
+                    printf("Answer is %.3f\n", ans);
+                    return; 
+                    //Do calculations then change "input" and recursively call. 
+                    //printf("%s %c %s", num1, operator, num2); 
+                }
+            } 
         }
-        return; 
     }
+
 }
 
 //ASCII 0 - 9 is 48 - 57
 void runShell() {
-    int num1 = 0; 
-    int num2 = 0; 
     char input[BUFF_SIZE]; 
-
   //Infinite loop until 'quit' is entered. 
     while (1){
         printf("? ");
         if (fgets(input, BUFF_SIZE, stdin) != NULL){
+            remove_whitespace(input);
+            if (strstr(input, "quit") != NULL && strlen(input) == 5){
+                printf("Goodbye!\n");
+                exit(EXIT_SUCCESS);
+            } 
             processHelper(input); 
             printf("\n");
         } else {
