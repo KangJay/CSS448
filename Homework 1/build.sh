@@ -1,4 +1,3 @@
 #!/bin/bash
 
-gcc -o runcalc mycal.c
-./runcalc
+gcc mycal.c 

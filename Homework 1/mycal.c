@@ -1,16 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h> 
 #include <string.h>
-
-/*
-Extension
-Task 1: Allow spaces - E.g "2 + 3 "
-Task 2: Allow multi-digit numbers. E.g Numbers greater than 9 or negatives following the same rule.
-Task 3: Allow all operators. E.g +, -, *, /
-Task 4: Allow real number. E.g. 1.2 * 25.7
-Task 5. Support multi operator operations. E.g 1 + 2.3 * 4.5 - 6.0. No precedence ok.
-*/
-
+#include <stdlib.h>
+#include <stdbool.h> 
 /*
 Hints:
 Use scanf, gets, strtok 
@@ -24,88 +16,19 @@ Beware: "gets" is inherently unsafe because it causes buffer overruns and securi
 
 #define FIRST 0 
 #define SECOND 1
-/*
-void processInput(char * input){
-    char c; 
-    printf("%s", input);
-    char operator; 
 
-    int num1 = 0; 
-    int num2 = 0;
-    int ans = 0; 
-    
-    //Left-side of operator number or right-side. 
-    //E.g. if an operator is found, we should start adding to the right side number. 
-    int whichNum = FIRST;
-    
-    int operatorIsValid = VALID; //To stop multiple operators in a row. 
-    // E.g. 1 ** 3, 1 +/ 5, etc. 
+//Char buffers used to represent the operands. 
+char num1[100]; 
+char num2[100]; 
 
-    int completeNum = VALID;  //a complete number counts as one without spaces inbetween. 
-    //E.g 14 + 3 is valid. But 1 4 + 3 is not. This is used to keep track of this.  
-    //If completeNum is invalid, the next non-whitespace character should be a operator. 
-    
-    for (int i = 0; i < strlen(input); i++){
-        c = input[i]; 
-        //Skip over spaces. 
-        if (c == ' ' || c == '\t') {
-            completeNum = INVALID;
-            continue; 
-        }  else if (c > '0' && c < '9') { //Checking for valid input. 
-            if (completeNum == VALID){
-                if (whichNum == FIRST){
-                    num1 *= 10; 
-                    num1 += c - '0'; 
-                } else if (whichNum == SECOND){
-                    num2 *= 10; 
-                    num2 += c - '0'; 
-                }
-            } else {
-                printf("Invalid input. Spaces in-between numbers. \n");
-                return; 
-            }
-            printf("%c", c);
-        } else if (c == '-' || c == '+' || c == '*' || c == '/'){
-            if (operatorIsValid == VALID) {
-                whichNum = SECOND; 
-                operatorIsValid = INVALID; 
-                if (c == '-') {
-                    operator = '-'; 
-                } else if (c == '+') {
-                    operator = '+'; 
-                } else if (c == '*'){
-                    operator = '*'; 
-                } else {
-                    operator = '/';
-                }
-            } else if (operatorIsValid == INVALID && whichNum == SECOND){
-                //Do calculations here 
-                operatorIsValid = VALID; 
-                whichNum = FIRST;   
-            } else {
-                printf("Multiple operators in a row. Please reformat.\n");
-                return; 
-            }
+//Hold the current operator. 
+char operator; 
 
-        } else if (c == '\0' || c == '\n'){ //Do calculations here. 
-            if (whichNum == SECOND && operatorIsValid == INVALID){
-                //Do calculation
-
-                whichNum = FIRST;
-                operatorIsValid = VALID; 
-            }
-            return; 
-        } else {
-            printf("%c", c);
-            printf("Invalid input entered. Please re-enter only numbers and operands. \n");
-            return;  
-        }
-    }
-}*/
-
-double addSub(double num1, double num2) {
-    return num1 + num2; 
-}
+//Methods for doing arithmetic. 
+double add(double num1, double num2) { return num1 + num2; }
+double subtract(double num1, double num2){ return num1 - num2; }
+double multiply(double num1, double num2){ return num1 * num2; }
+double divide(double num1, double num2) { return num1 / num2; }
 
 //Got this method from https://stackoverflow.com/questions/1726302/removing-spaces-from-a-string-in-c
 //Removes white space from a string. 
@@ -118,38 +41,88 @@ void remove_whitespace(char * s){
     } while (*s++ = *d++);
 }
 
-void processHelper(char * input){
-
-    int sum = 0; 
-    char num1[100]; 
-    char num2[100]; 
-    char operator; 
-    char c; 
-    int opIsValid = VALID; 
-    int needToCalc = INVALID; 
-    int prevInd = 0; 
-    int whichNum = FIRST; 
-
+/*
+Purpose is to determine if there is a expression to evaluate. 
+This just checks to see if the input has a operator (+, -, *, and/or /) inside
+and will return true if so, false otherwise. 
+*/
+bool isExpression(char * input){
     if ((strstr(input, "+") != NULL) || (strstr(input, "*") != NULL) 
         || (strstr(input, "-") != NULL) || (strstr(input, "/") != NULL)) {
-        for (int i = 0; i < strlen(input); i++) {
+            return true; 
+    }
+    return false; 
+}
+
+//Just reset the char buffers 
+void clearNums(){
+    memset(num1, 0, sizeof(num1)); 
+    memset(num2, 0, sizeof(num2)); 
+}
+
+/*
+Test Cases: 
+1. Allow spaces Eg: “ 2  + 3   “ --> Answer: 5
+2. Allow Multi-digit numbers    Eg: “ 42 - 39  “ --> Answer: 3
+3. Support:  + - * /    Eg: “ 3 * 67  “ --> Answer: 201
+4. Allow real numbers   Eg: “ 1.2 * 25.7” --> Answer: 30.84
+5. Support multi-operations Eg: “  1 + 2.3* 4.5 – 6.0 “ (no precedence!)
+     --> Answer: 8.85 (without precedence)
+*/
+
+/*
+Main method for handling the arithmetic expressions. 
+Does so by taking the substrings of the first operand, operator, and the second operand. 
+It will evaluate this expression then subsitute the answer back into the main string. 
+E.g. 1 + 3 * 3 would evaluate (1 + 3) as 4 then subsitute it back into the input string
+forming 4 * 3, then recalling the method to evaluate this new string. 
+It'll do this evaluation, subsitution, and method call until there is no expression
+to be evaluated - in which it assumes that the correct answer has been found. 
+A lot of error checking has not been implemented. E.g. Spaces in-between numbers, 
+multiple expressions in a row ( 1 +++*--/ 4), etc. 
+*/
+void processHelper(char * input){
+    //Remove whitespace. 
+    remove_whitespace(input);
+    char c;     // char variable to hold which char value we're at in the string. 
+    int prevInd = 0; // Index representing the lower bound of the string. 
+    int whichNum = FIRST;   // Dictates if we're finding the first or second operand. 
+
+    bool firstOperator = true; // Used to take the substring of 1st operand, op, 2nd operand. 
+    if (isExpression(input)) {
+        for (unsigned int i = 0; i < strlen(input); i++) {
             c = input[i]; 
+            //The length of the substring to be extracted. 
             int size = i - prevInd; 
+            //Check if the number is within the numerical range in ascii values. 
             if (c < '0' || c > '9') {
+                // If it's not, it'll check if it's an operator or a decimal. 
                 switch(c){
                     case '.':
                         continue; 
                     case '+':
-                        operator = '+';
+                        if (firstOperator){
+                            operator = '+';
+                            firstOperator = false; 
+                        }
                         break; 
                     case '-':
-                        operator = '-';
+                        if (firstOperator){
+                            firstOperator = false; 
+                            operator = '-';
+                        }
                         break;
                     case '*':
-                        operator = '*';
+                        if (firstOperator){
+                            firstOperator = false; 
+                            operator = '*';
+                        }
                         break;
                     case '/':
-                        operator = '/';
+                        if (firstOperator){
+                            firstOperator = false; 
+                            operator = '/';
+                        }
                         break;
                     case '\n':
                     case '\0':
@@ -158,32 +131,61 @@ void processHelper(char * input){
                         printf("Invalid character in input: '%c'. Please reformat and re-enter.\n", c); 
                         return; 
                 }     
+                // First operand is extracted from the previous index to prevInd + size. 
                 if (whichNum == FIRST){
+                    //Copy into our num1 variable. 
                     memcpy(num1, &input[prevInd], size); 
+                    //Null byte to note the end of the string. 
                     num1[size] = '\0';
+                    //Increment the prevInd variable. 
                     prevInd = i + 1;
+                    //Change to check for the second operand. 
                     whichNum = SECOND; 
                     continue; 
                 } else {
+                    //Copy into our num2 variable. 
                     memcpy(num2, &input[prevInd], size); 
+                    //Null byte ot note the end of  the string
                     num2[size] = '\0';
+                    //Increment variable ()
                     prevInd = i + 1;
-                    
+
+                    double firstNum = atof(num1); 
+                    double secNum = atof(num2); 
+
                     double ans = 0.0; 
                     if (operator == '+') {
-                        ans = addSub(atof(num1), atof(num2));
+                        ans = add(firstNum, secNum);
                     } else if (operator == '-') {
-                        ans = addSub(atof(num1), atof(num2) * -1); 
+                        ans = subtract(firstNum, secNum); 
+                    } else if (operator == '*'){
+                        ans = multiply(firstNum, secNum);  
+                    } else {
+                        ans = divide(firstNum, secNum);
                     }
-                    printf("Answer is %.3f\n", ans);
-                    return; 
-                    //Do calculations then change "input" and recursively call. 
-                    //printf("%s %c %s", num1, operator, num2); 
+
+                    char temp[BUFF_SIZE]; 
+                    char substring[BUFF_SIZE]; 
+                    snprintf(temp, sizeof(ans), "%.5f", ans);
+                    memcpy(substring, &input[prevInd - 1], strlen(input)); 
+
+                    char * n = strcat(temp, substring);
+                    //n[strlen(n) - 2] = '\0';
+                    //printf("first num: %s, second num: %s\n", num1, num2);
+                    //printf("------------\n%f\n%s\n%s\n------------\n", ans, substring, n); 
+                    clearNums();
+                    if (isExpression(n)){
+                        processHelper(n);
+                        return;
+                    } else {
+                        printf("The answer is %.3f\n", ans);
+                        return;
+                    }
+
                 }
             } 
         }
-    }
-
+    } 
 }
 
 //ASCII 0 - 9 is 48 - 57
@@ -193,7 +195,6 @@ void runShell() {
     while (1){
         printf("? ");
         if (fgets(input, BUFF_SIZE, stdin) != NULL){
-            remove_whitespace(input);
             if (strstr(input, "quit") != NULL && strlen(input) == 5){
                 printf("Goodbye!\n");
                 exit(EXIT_SUCCESS);
