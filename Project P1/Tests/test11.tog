@@ -1,0 +1,28 @@
+# test11.tog - Factorial function
+
+fun fac:num n:num =
+  var sum:num
+  var i:num
+  let sum = 1
+  let i = 1
+  while i <= n do
+    let sum = sum * i
+    let i = i + 1
+  elihw
+  ret sum
+nuf
+
+
+fun main =
+  var upto:num
+  var answer:num
+  var announce:str
+  var is:str
+
+  let upto = 7
+  let answer = call fac upto
+  let announce = 'Factorial of '
+  let is = ' is '
+
+  say announce    say upto    say is    say answer    nl
+nuf

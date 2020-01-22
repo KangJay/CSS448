@@ -1,0 +1,25 @@
+# test10.tog - find maximum of 2 nums
+
+fun max:num x:num y:num =
+  if x > y then ret x fi
+  ret y
+nuf
+
+fun main =
+  var a:num
+  var b:num
+  var ans:num
+  var msg:str
+
+  let a = 3
+  let b = 4
+  let ans = call max a b
+  let msg = 'maximum of 3 and 4 is '
+  nl nl
+  say msg
+  say ans
+  nl
+  stop
+nuf
+
+

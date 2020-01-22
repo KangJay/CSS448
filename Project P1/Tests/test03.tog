@@ -1,0 +1,9 @@
+# test03.tog
+
+fun main =
+  var a:num
+  var b:str
+  let b = 'hello'
+  say b
+  nl
+nuf

@@ -1,0 +1,12 @@
+# test02.tog
+
+fun main =
+  var a:num
+  var b:num
+  var c : num
+  let a = 1
+  let b = 2
+  let c = a + b
+  say c
+  nl
+nuf

@@ -1,0 +1,16 @@
+# test08.tog
+
+fun sub:num a:num b:num =
+  var res:num
+  let res = a - b
+  if res < 0 then ret 99 fi
+  say 'Next statement'  nl
+  ret res
+nuf
+
+fun main =
+  var result:num
+  let result = call sub 9 4
+  say result
+  nl
+nuf

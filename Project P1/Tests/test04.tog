@@ -1,0 +1,17 @@
+# test04.tog
+
+fun main =
+  var a:num
+  var b:num
+
+  let a = 7
+  let b = 7
+
+  if a == b then
+    say 'Equal'  nl
+  fi
+
+  if a != b then
+    say 'Not equal'  nl
+  fi
+nuf

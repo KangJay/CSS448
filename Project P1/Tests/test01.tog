@@ -1,0 +1,8 @@
+# test01.tog
+
+fun main =
+  var x:num
+  let x = 42
+  say x
+  nl
+nuf

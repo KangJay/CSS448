@@ -1,0 +1,16 @@
+# test07.tog
+
+fun main =
+  var counter:num
+  var test:num
+
+  let counter = 1
+  while counter < 5 do
+    let test = counter == 3
+    if test == 1 then
+      say 'counter should be 3'   nl
+      say 'actual value is    '   say counter   nl
+    fi
+    let counter = counter + 1
+  elihw
+nuf

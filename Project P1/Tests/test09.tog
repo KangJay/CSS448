@@ -1,0 +1,13 @@
+# test09.tog - duplicate variables
+
+fun add:num a:num b:num =
+  var x:num
+  let x = a + b
+  ret x
+nuf
+
+fun main =
+  var x:num
+  let x = call add x 3
+  say x  nl
+nuf
