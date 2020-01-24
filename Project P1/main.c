@@ -39,12 +39,20 @@ int main(int argc, char* argv[]) {
 
   char* prog = utReadFile(argv[1]);       // raw chars
   if (!prog){
+    //If the file can't be opened/read from, 'prog' is NULL. 
     printf("File: \'%s\' could not be opened and/or read from.\n", argv[1]); 
     exit(EXIT_FAILURE); 
   }
+
+
   //++ Insert a loop that steps thru every char of 'prog' and
-  //++ printa its decimal (%d) and character (%c) value
+  //++ print its decimal (%d) and character (%c) value
   //++ to the console.
+  char *cursor; 
+  int loopNum = 0; 
+  for (cursor = prog; *cursor != '\0'; cursor++){
+    printf("i = %d c = %d %c\n", loopNum++, *cursor, *cursor);
+  }
 
   Lex* lex = lexNew(prog);
   Toks* toks = lexGo(lex);

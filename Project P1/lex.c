@@ -95,13 +95,18 @@ Tok* lexNum(Lex* lex) {
 
   //++ Step along the input string until we hit a non-digit.  Accumulate
   //++ result into variable 'sum'
-
-  lexMove1(lex); lexMove1(lex); lexMove1(lex);                        // FIXUP
+  int num = c - '0';
+  int numLength = 1;  
+  while (num <= 9 && num >= 0){
+    sum = sum * 10 + num; //Move first digit over one place then add the current number.  
+    c = lexMove1(lex); 
+    num = c - '0'; 
+    numLength++; 
+  }
 
   int len = lex->pos - start;
   char* lexeme = utStrndup(&lex->text[start], len);
-
-  Tok* tok = tokNew(TOKNUMLIT, "999", 999, lex->linNum, lex->colNum); // FIXUP
+  Tok* tok = tokNew(TOKNUMLIT, lexeme, sum, lex->linNum, lex->colNum); // FIXUP
   return tok;
 }
 

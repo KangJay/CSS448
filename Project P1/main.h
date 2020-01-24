@@ -5,6 +5,5 @@
 #include <stdio.h>      // printf, FILE
 #include <stdlib.h>     // exit
 
-#include "lex.h"        // Lex
 #include "ut.h"         // utReadFile
-
+#include "lex.h"

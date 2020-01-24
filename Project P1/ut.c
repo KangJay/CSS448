@@ -57,26 +57,17 @@ char* utReadFile(char* filePath) {
   fseek(fileInput, 0, SEEK_SET); 
   //printf("File: \'%s\' has a size of %d bytes.\n", filePath, fileSize); 
   
-  //Read the entire file specified by 'filePath'. Return its contents.
-  
   //++ Allocate a buffer, zero-filled, to hold the file contents. 
   buffer = (char *)calloc(fileSize, sizeof(char)); 
   if (!buffer){
     printf("Memory error has occurred. Please retry.\n");
     exit(EXIT_FAILURE); 
   }
-  fread(buffer, sizeof(char), fileSize, fileInput); 
-  printf("%s\n", buffer);
-  
-  //char* prog = (char*) calloc(1000, 1);                         // FIXUP
-
   //++ Read entire file into the 'prog' buffer
-
-  //strcpy(prog, "fun main = var x : num let x = 42 say x nuf");  // FIXUP
+  fread(buffer, sizeof(char), fileSize, fileInput);   
   fclose(fileInput); // Close file. 
   free(fileInput);  // Free pointer's allocated memory.
   return buffer;
-
 }
 
 
