@@ -1,0 +1,2 @@
+(base) jaydenk@kangjay:~/Dropbox/CSS 448/Project/Project P3$ ./parse ../Tests/test06.tog 
+Prog Fun main Body Var a TYPNUM Var b TYPNUM Let a Exp Num 0 Let b Exp Num 5 While Exp Nam a Bop < Nam b Say Exp Nam a Nl Let a Exp Nam a Bop + Num 1 Nuf 

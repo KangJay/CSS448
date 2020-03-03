@@ -1,0 +1,49 @@
+The diagram [below] shows a region of memory, byte by byte.  
+It holds 3 dwords (32 bits each), in Little-Endian format.
+
+Address     Data        
+-------     ----
+1000        05
+1001        00
+1002        01
+1003        00
+1004        0A
+1005        00
+1006        00
+1007        00
+1008        1B
+1009        04
+100A        00
+100B        00
+
+1. What is the value stored in each dword?  Give the answer in hex and decimal
+Address 1000 - 1003:
+    Hex: 0x00010005
+    Decimal: 65541
+Address 1004 - 1007:
+    Hex: 0x0000000A
+    Decimal: 10
+Address 1008 - 100B: 
+    Hex: 0x0000041B
+    Decimal: 1051
+
+2. If instead that memory were interpreted as 6 words (still in Little-Endian format), 
+then what is the value stored in each word?  Give the answers in hex and decimal
+Address 1000 - 1001: 
+    Hex: 0x0005
+    Decimal: 5
+Address 1002 - 1003: 
+    Hex: 0x0001
+    Decimal: 1
+Address 1004 - 1005: 
+    Hex: 0x000A
+    Decimal: 10
+Address 1006 - 1007: 
+    Hex: 0x0000
+    Decimal: 0
+Address 1008 - 1009: 
+    Hex: 041B
+    Decimal: 1051
+Address 100A - 100B: 
+    Hex: 0x0000
+    Decimal: 0 

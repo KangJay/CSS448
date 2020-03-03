@@ -1,0 +1,67 @@
+Ji Kang
+
+Binary operator: e1 op e2 
+    - e1 and e2 have compatible types
+        - Identical, or well-defined conversion for appropriate types
+    -Inferred type is a function of the operator and operand types 
+
+Task 2: In a similar fashion, write out the semantic checks required when the compiler encounters an assignment:    e1 = e2  in an object-oriented language such as C++ or Java.
+
+
+Consider the cases where the type of expressions e1 or e2 can be: 
+    - built-in types (eg char, int)
+    - variables or constants
+    - where the language supports automatic type conversions
+    - object - either unrelated, or related in a class hierarchy
+
+Answers: 
+
+1. Check if 'e1' is non null. Eg. is 'e1' non-null? 'null = e2' is not allowed. 
+
+2. Check if 'e1's and 'e2's type are the same or identical (Do they share the same number of bits?) 
+
+3. Check if 'e1' and 'e2' are both primitive and/or non-primitive values (literal or object values). If 'e1' is an object and 'e2' is a primitive, is there a valid mechanism for conversion? 
+    --> Eg. Java has the 'Integer', 'Double', 'Character' classes that are object wrappers around their primitive counter parts. So Integer intNum = 5; is valid. 
+
+4. Check if 'e2' is the same object as 'e1'. 
+    Eg. Without a valid copy constructor in place... 
+    Obj e1 = new Obj(); 
+    Obj e2 = e1; // e2 points to the same place in memory as e1. 
+    e1 = e2 //  is a self assignment. Error on user's end. 
+    --> The deletion of either one of the objects would result in errors when trying to use the other for operations in the future. It'll try to access content that was deleted. 
+
+5. Check if 'e2' is higher up on the inheritance tree than 'e1'. Upcasting is considered always safe in Java. 
+    Eg. A popular example is 'Animal animal = new Dog();'
+
+6. Check if 'e2' is lower on the inheritance tree than 'e1'. Downcasting can cause errors if the two objects are related in the tree but not directly related. 
+    Eg. When downcasting is VALID
+        Animal animal = new Cat(); 
+        Cat cat = (cat) animal; 
+    --> Is valid since the actual object type and target object type are the same (animal is a "Cat" and "cat" is of type "Cat"). 
+    Eg. When downcasting is INVALID
+        Animal animal = new Cat(); 
+        Dog dog = (dog) animal; 
+    --> Invalid because the actual object type is not the same as the target. "Cat" != "Dog". 
+    --> Both are related because they're descendants of "Mammal" but only share similarities in implementing the same interface. 
+
+7. If this is C++ and 'e1' is a type of a defined class and the '=' operator is overloaded for objects of that class, there must be a check to see if there is a overloaded '=' operator function AND see if 'e2' is a valid right hand side value for the assignment operation.
+    --> Eg. Does the class have an overloaded '=' operator and does the right hand side value fit it?
+    --> If there isn't a valid copy constructor/assignment operator overload, it also needs to check if the values are primitive or non-primitive and do a reference or value assignment accordingly. 
+
+8. Check 'e1's or 'e2's accessibility. 
+    --> Eg. Are 'e1' and 'e2' public, private, or protected (Respectively)? 
+
+9. Is 'e1' a declared or inferred type? 
+	--> Inferred typed and declared types are compatible. 
+
+10. Have 'e1' and 'e2' been declared?
+    --> Eg. 
+        e1 = e2; // 'e1' and 'e2' don't exist yet. 
+
+11. Assuming 'e1' has been declared, has 'e2' been declared AND initialized?
+    --> Eg. 
+        Obj e1;
+        Obj e2; 
+        e1 = e2; // e2 hasn't been initialized.  
+
+

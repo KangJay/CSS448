@@ -1,0 +1,96 @@
+Ji Kang
+
+Task 1: Devise 10 semantic rules that apply to Tog.  Do not repeat any we covered in class.  
+To do so, apply your knowledge of C or C++ to devise analogous rules for Tog.  
+Finally, make sure your 10 rules are semantic - not lexical or synactic. 
+Write your answer into a text file called semantics.txt.  (10 points)
+
+Grammar for Tog: 
+Prog       => Fun+
+Fun        => "fun" Nam ":" Type Param+ "=" Body "nuf" | "main" "=" Body "nuf"
+Type       => "num" | "str"
+Param      => Nam ":" Type
+Body       => Var* Stm+
+Var        => "var" Nam ":" Type
+Stm        => If | Let | Nl | Ret | Say | Stop | While
+If         => "if" Exp "then" Stm+ "fi"
+Let        => "let" Nam "=" Exp
+Ret        => "ret" Exp
+Say        => "say" Exp
+Nl         => "nl"
+Stop       => "stop"
+While      => "while" Exp "do" Stm+ "elihw"
+NamLit     => Nam | Num | Str
+Exp        => NamLit | NamLit Bop NamLit | Call
+Bop        => "+" | "-" | "*" | "/" | "<" | "<=" | "!=" | "==" | ">=" | ">"
+Call       => "call" Nam NamLit*
+Num        => [0-9]+
+Str        => "'" NonTicks "'"
+Nam        => Alpha AlphaNum*
+Alpha      => [a-zA-Z]
+AlphaNum   => [a-zA-Z0-9]
+NonTicks   => [^']*
+
+Semantic Rules covered in class: 
+• Variable not declared before being used?
+• Are types consistent in an expression? 
+• In the assignment let x = y, is y assignable to x?
+• Function called with wrong number of parameters?
+• Is variable x initialized before it is used?
+• Is called function defined anywhere?
+• Function defined twice
+
+Answers: 
+
+1. The '/' binary operation on two operands must follow so that the denominator of the expression cannot be 0. Eg. Cannot divide any number by 0. 
+    Eg. Typically a logic error on the programmer's fault for not catching. 
+
+2. Main function shouldn't have a return statement, in Tog, at least. 
+
+3. A Tog program should, at minimum, have a main function. 
+
+4. Function is defined but never used. 
+
+5. Cannot have multiple return statements in the same scope of a function body. Eg. You could have multiple return statements depending on some checks you may do. 
+    Eg. bool isNegative(int n) { 
+        if (n < 0) { return true; } 
+        return false; 
+    }
+But you cannot have return statement(s) the function can never reach and statements that cannot be reached. 
+    E.g. fun somefunc:num = 
+            ret 1
+            ret 2
+            ret 3
+            ret 4
+            Stm1
+            Stm2
+            etc. 
+        }   --> The bottom 3 return statements are invalid. However, since the return statements
+        are a result of the production rule of 'Stm's and a function body has 1 or more. It'd be
+        perfectly legal to have multiple return statements like this. 
+
+6. Assuming a number is 32-bit signed... a 'Num' cannot be greater than 2,147,483,647, or 2^31 - 1. 
+
+7. Strings cannot be subtracted and multiplied with other strings. Eg. '' * '' is not valid. 
+
+8. There shouldn't be any other statements in a function body after "stop". This would terminate the program early so the additional 'Stm's would be unreachable. Similar with the return statement. 
+
+9. Cannot have multiple parameters sharing the same name. 
+    Eg. fun fac:num n:num n:str = .... nuf 
+
+10. Cannot redefine variables dynamically. Tog is not a dynamically typed language. 
+    Eg. In the same program scope, you cannot... 
+        var x: num
+        var x: str
+        var x: num
+        let x = 5 
+
+11. Token names must be unique. Not just between variables but also functions. 
+    Eg. I can do something like this in tog and the lexer and recognizer say its perfectly valid. 
+    fun main = 
+        var main:str
+        let main = 'This shouldn't be allowed'
+    nuf
+    And it'll recognize it as valid lexically and syntactically. This would cause ambiguous entries in the symbol table. 
+
+12. Applying scope incorrectly. Trying to use a variable that is DECLARED & INITIALIZED but within the scope of another function body. 

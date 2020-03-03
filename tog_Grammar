@@ -1,0 +1,27 @@
+Prog   => Fun+
+Fun    => "fun" Nam ":" Type Param* "=" Body "nuf" 
+       | "main" "=" Body "nuf"
+Type  => "num" | "str"
+Param => Nam ":" Type
+Body  => Var* Stm+
+Var   => "var" Nam ":" Type
+Stm   => If | Let | Nl | Ret | Say | Stop | While
+If    => "if" Exp "then" Stm+ "fi"
+Let   => "let" Nam "=" Exp
+Ret   => "ret" Exp
+Say   => "say" Exp
+Nl    => "nl"
+Stop  => "stop"
+While => "while" Exp "do" Stm+ "elihw"
+NamLit   => Nam | Num | Str
+Exp      => NamLit | NamLit Bop NamLit | Call
+Bop      => "+" | "-" | "*" | "/" 
+          | "<" | "<=" | "!=" | "==" | ">=" | ">"
+Call     => "call" Nam NamLit*
+Num      => [0-9]+
+Str      => "'" NonTicks "'"
+Nam      => Alpha AlphaNum*
+Alpha    => [a-zA-Z]
+AlphaNum => [a-zA-Z0-9]
+NonTicks => [^']*
+

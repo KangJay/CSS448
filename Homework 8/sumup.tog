@@ -1,0 +1,22 @@
+# sumup.tog 
+
+fun sumup:num from:num to:num = 
+    var s:num
+    let s = 0 
+    var i:num 
+    let i = from 
+    while i <= to do  
+        let sum = sum + i 
+        let i = i + 1
+    elihw 
+    ret s 
+nuf 
+
+fun main = 
+    var a:num 
+    var b:num 
+    var c:num 
+    let a = 3 
+    let b = 14 
+    let c = call a b
+nuf

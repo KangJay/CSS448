@@ -1,0 +1,68 @@
+Task:
+
+    Write the code to access any element of a cuboid of data - 
+    a 3-dimensional block of number, represented by a 3-dimensional array in C:  
+        int a[2][3][4] for example.  
+    Consult Lecture-110-IR.pptx, slides 10 and 11 for help.
+
+Should Resemble: 
+    loadI  1      => r1
+    sub    rj, r1 => r2
+    loadI  9      => r3
+    mul    r2, r3 => r4
+    sub    ri, r1 => r5
+    add    r4, r5 => r6
+    loadI  @A     => r7
+    add    r7, r6 => r8
+    load   r8     => r9
+
+Hint: 
+    Remember to account for the size of each cell being an int - assume 4
+    Do not reuse any register - just keep using fresh ones ... r10, r11, etc
+
+a[i][j][k]
+    - Assuming the dimension of each subscript is [1...9]. 
+    - Following the lecture 110 format, assuming this is also column-major form. 
+    - 'k' would cycle the fastest through memory. Then 'j', then 'i'. 
+        - 'i' is equal to the number of 2D arrays 
+        - 'j' is equal to the size of each row 
+        - 'k' is equal to the size of each column
+    - Adress of a[i, j, k] would be: 
+        base_address + ((i - 1) * sizeof(int) * num_cols * num_rows) 
+            + ((j - 1) * sizeof(int)) + ((k - 1) * sizeof(int) * num_rows)
+
+Answer to Part 1: 
+    - C/C++ employs a row-major scheme for their arrays. But we looked at 
+        column-major arrays in our lecture. 
+    - I did this problem assuming, the cuboid follows the COLUMN-MAJOR scheme. 
+        Also assumed it followed the 1 -> 9 dimensions like in the lectures. 
+    - Used the symbolixc registers shown in the example. 
+        Eg. rj = register with 'j's value. ri for 'i's value, etc. 
+
+    loadI   1       => r1   //  To subtract 1 from the indexes. 
+    loadI   4       => r2   //  Represents the size of an int in bytes 
+    loadI   9       => r3   //  Number of column and rows 
+    sub     ri, r1  => r4   //  (i - 1)
+    mul     r4, r3  => r5   //  (i - 1) * num_rows 
+    mul     r5, r3  => r6   //  (i - 1) * num_rows * num_cols 
+    sub     rj, r1  => r7   //  (j - 1)
+    sub     rk, r1  => r8   //  (k - 1)
+    mul     r8, r3  => r9   //  (k - 1) * num_rows
+    add     r5, r7  => r10
+    add     r10,r9  => r11  // 
+    mul     r11, r2 => r12  //  sizeof(int) * the i, j, and k addresses \
+    loadI   @a      => r13  //  a[1, 1, 1], the base address 
+    add     r13,r12 => r14  //  base address + the other addresses
+    load    r14     => r15  //  r15 = a[i, j, k]
+
+
+State the order in which your cuboid is laid out sequentially in memory - 
+equivalent to saying which indexes cycle fastest as you proceed thru memory.  
+(Eg: for a 2-D array in C, the order would be a[0][0], a[0][1], etc.  
+So last index cycles fastest.
+
+Answer:
+    Since I laid out my cuboid in a column-major scheme, it's reverse of a row-major 
+    in terms of how the array is laid out in memory. 
+    The first index would be the fastest changing, 'i' in this case. Then 'j', 
+    then 'k' last. 

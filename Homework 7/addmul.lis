@@ -1,0 +1,18 @@
+     1                                 %line 1+1 addmul.s
+     2                                 [segment .data]
+     3 00000000 0200000000000000       a: DQ 2
+     4 00000008 0400000000000000       b: DQ 4
+     5 00000010 0600000000000000       c: DQ 6
+     6                                 
+     7                                 [segment .text]
+     8                                 [global main]
+     9                                 
+    10                                 main:
+    11 00000000 488B0425[00000000]      mov rax, [b]
+    12 00000008 488B1C25[00000000]      mov rbx, [c]
+    13 00000010 48F7E3                  mul rbx
+    14 00000013 4831DB                  xor rbx, rbx
+    15 00000016 488B1C25[00000000]      mov rbx, [a]
+    16 0000001E 4801D8                  add rax, rbx
+    17 00000021 4831DB                  xor rbx, rbx
+    18 00000024 C3                      ret

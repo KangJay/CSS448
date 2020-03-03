@@ -1,0 +1,36 @@
+Calculate the FIRST sets for each Non-Terminal in the following Grammar: 
+
+S => Ab | Bc
+    - FIRST(S) = FIRST(A)  = {c, d, h, i}
+    - FIRST(S) = FIRST(B) = {g, e}
+    - Answer = FIRST(A) U FIRST(B) = {c, d, e, g, h, i}
+
+A => Df | CA
+    - FIRST(A) = FIRST(D) = {h, i}
+    - FIRST(A) = FIRST(C) = {d, c}
+    - Answer = FIRST(A) = FIRST(D) U FIRST(C) = {c, d, h, i}
+
+B => gA | e
+    - Answer = FIRST(B) = {g, e}
+
+C => dC | c
+    - Answer = FIRST(C) = {d, c}
+
+D => h  | i 
+    - Answer = Answer = FIRST(D) = {h, i}
+
+Calculate the FIRST sets for each Non-Terminal in the following Grammar: 
+
+S => ABC
+    - Answer = FIRST(S) = FIRST(A) = {a, e, f, ε}
+
+A => a | Cb | ε
+    - FIRST(A) = {a, ε}
+    - FIRST(A) = FIRST(C) = {e, f}
+    - Answer = FIRST(A) U FIRST(C) = {a, e, f, ε} 
+
+B => c | dA | ε
+    - Answer = FIRST(B) = {c, d, ε}
+
+C => e | f
+    - Answer = FIRST(C) = {e, f}
